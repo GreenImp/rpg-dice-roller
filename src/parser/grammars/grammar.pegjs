@@ -72,13 +72,13 @@ TargetModifier
     return new Modifiers.TargetModifier(successCP, failureCP);
   }
 
-// Drop lowest/highest dice) - needs alternative syntax of `"-" ("h" | "l")`
+// Drop lowest/highest dice)
 DropModifier
   = "d" end:[lh]? qty:IntegerNumber {
     return new Modifiers.DropModifier(end || 'l', qty);
   }
 
-// Keep lowest/highest dice) - needs alternative syntax of `"+" ("h" | "l")`
+// Keep lowest/highest dice)
 KeepModifier
   = "k" end:[lh]? qty:IntegerNumber {
     return new Modifiers.KeepModifier(end || 'h', qty);
@@ -199,5 +199,31 @@ Operator
  = "**" { return "^" } / "*" / "^" / "%" / "/" / "+" / "-"
 
 
-_ "whitespace"
-  = [ \t\n\r]*
+/**
+ * Comments
+ */
+
+Comment "comment"
+  = MultiLineComment
+  / SingleLineComment
+
+// allows comments in the format of /* .. */ and [ ... ]
+MultiLineComment
+  = "/*" (!"*/" .)* "*/"
+  / "[" [^\]]* "]"
+
+// allows comments in the format of // ... and # ...
+SingleLineComment
+  = ("//" / "#") (!LineTerminator .)*
+
+
+LineTerminator
+  = [\n\r\u2028\u2029]
+
+WhiteSpace "whitespace"
+  = [ \t\n\r]
+
+_ = WhiteSpace*
+
+__ "whitespace or comment"
+  = (WhiteSpace / Comment)*
