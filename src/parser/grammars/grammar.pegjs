@@ -7,7 +7,7 @@ Main = Expression
 
 // Expression / roll groups
 RollGroup
-  = "{" _ expr:Expression exprs:(_ "," _ Expression)* _ "}" modifiers:Modifier* {
+  = "{" _ expr:Expression exprs:(_ "," _ Expression)* _ "}" modifiers:Modifier* __ {
     return new RollGroup(
       [
         expr,
@@ -22,7 +22,7 @@ RollGroup
 
 // Dice
 
-Dice = die:(StandardDie / PercentileDie / FudgeDie) modifiers:Modifier* {
+Dice = die:(StandardDie / PercentileDie / FudgeDie) modifiers:Modifier* __ {
   die.modifiers = Object.assign({}, ...modifiers.map(item => {
     return {[item.name]: item};
   }));
